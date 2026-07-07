@@ -204,18 +204,6 @@ git push -u origin main
 - Add user-specific calibration for lighting/skin tone robustness
 - Multi-language text-to-speech and translation
 
----
-
-## 📸 Screenshots
-
-> _Add screenshots of the running app here._
-
-`assets/screenshot_home.png` — Main interface
-`assets/screenshot_prediction.png` — Live prediction in action
-`assets/screenshot_sentence.png` — Sentence builder
-
----
-
 ## 📄 License
 
 This project is provided as an educational/portfolio reference implementation.
