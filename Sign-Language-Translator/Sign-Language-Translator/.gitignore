@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Dataset (too large for git)
+dataset/asl_alphabet_train/
+dataset/asl_alphabet_test/
+dataset/*.zip
+
+# Trained model artifacts (optional: remove these lines if you want to version the model)
+models/*.keras
+models/*.h5
+models/*.png
+!models/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/

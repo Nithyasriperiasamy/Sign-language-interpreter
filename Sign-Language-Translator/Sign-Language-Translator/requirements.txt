@@ -1,0 +1,21 @@
+# Core deep learning
+tensorflow-cpu==2.16.1
+
+# Computer vision & hand tracking
+opencv-python-headless==4.10.0.84
+mediapipe==0.10.14
+
+# Web app
+streamlit==1.38.0
+
+# Numerical / data
+numpy==1.26.4
+pillow==10.4.0
+scikit-learn==1.5.1
+
+# Plotting (used by train.py)
+matplotlib==3.9.2
+seaborn==0.13.2
+
+# Text-to-speech
+gTTS==2.5.3
