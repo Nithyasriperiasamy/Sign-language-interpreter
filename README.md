@@ -1,210 +1,245 @@
-# 🤟 CNN-Based Sign Language Translator
+ CNN-Based Sign Language Translator
 
-A real-time web application that recognizes American Sign Language (ASL)
-alphabet hand gestures using a custom Convolutional Neural Network (CNN)
-and translates them into text — with optional text-to-speech playback.
+A real-time sign language translator that recognizes **American Sign Language (ASL)** alphabet gestures using a custom Convolutional Neural Network (CNN) and converts them into text. The application also includes an optional text-to-speech feature that reads the translated sentence aloud.
 
-Built with **TensorFlow/Keras**, **OpenCV**, **MediaPipe Hands**, and
-**Streamlit**, and deployable directly on **Hugging Face Spaces**.
+The project combines **TensorFlow/Keras**, **MediaPipe Hands**, **OpenCV**, and **Streamlit** to provide an interactive and user-friendly interface for real-time gesture recognition.
 
----
 
-## ✨ Features
 
-- 🖐️ Real-time hand detection via MediaPipe Hands
-- 🧠 Custom CNN trained on the ASL Alphabet dataset (29 classes)
-- 📷 Webcam capture **and** image upload support
-- 🔤 Live letter prediction with confidence score
-- 📝 Sentence builder with Add / Delete / Space / Clear controls
-- 🔊 Text-to-speech playback of the built sentence
-- 📊 Prediction history panel
-- ⬇️ Download the translated sentence as a `.txt` file
-- 🌙 Dark-mode-first, responsive UI
+ Why I Built This Project
 
----
+I wanted to explore how deep learning and computer vision can be combined to solve a real-world accessibility problem. Rather than using a pre-trained image classification model, I trained a CNN from scratch to better understand the complete workflow—from data preprocessing and model training to real-time deployment.
 
-## 🏗️ Architecture
+The project also gave me hands-on experience integrating machine learning models into a web application and optimizing the prediction pipeline for live webcam input.
 
-**CNN (Keras Sequential API):**
+Features
+
+* Real-time hand detection using MediaPipe Hands
+* Custom CNN trained on the ASL Alphabet dataset
+* Webcam-based gesture recognition
+* Image upload for testing predictions
+* Live prediction with confidence score
+* Sentence builder with Add, Delete, Space, and Clear options
+* Text-to-speech support for translated sentences
+* Prediction history panel
+* Download translated text as a `.txt` file
+* Responsive Streamlit interface with dark-mode support
+
+
+
+Tech Stack
+
+Languages
+
+* Python
+  
+Libraries & Frameworks
+
+* TensorFlow / Keras
+* OpenCV
+* MediaPipe
+* NumPy
+* Streamlit
+
+
+
+## Model Architecture
+
+The model is a custom Convolutional Neural Network built using the Keras Sequential API.
 
 ```
-Input (64x64x3)
- → Conv2D(32) → ReLU → MaxPooling2D
- → Conv2D(64) → ReLU → MaxPooling2D
- → Conv2D(128) → ReLU
- → Flatten
- → Dense(256) → ReLU → Dropout(0.5)
- → Dense(29) → Softmax
+Input (64 × 64 × 3)
+
+↓
+Conv2D (32) + ReLU
+↓
+MaxPooling2D
+
+↓
+Conv2D (64) + ReLU
+↓
+MaxPooling2D
+
+↓
+Conv2D (128) + ReLU
+
+↓
+Flatten
+
+↓
+Dense (256) + ReLU
+↓
+Dropout (0.5)
+
+↓
+Dense (29)
+↓
+Softmax
 ```
 
-**Training pipeline:**
+The model classifies 29 classes corresponding to the ASL alphabet, along with **space**, **delete**, and **nothing**.
 
-- `ImageDataGenerator` with rotation, shift, shear, zoom, and brightness augmentation
-- `EarlyStopping`, `ModelCheckpoint`, and `ReduceLROnPlateau` callbacks
-- Automatic accuracy/loss plots and a confusion matrix saved to `models/`
 
-**Inference pipeline:**
+## Training Pipeline
 
-- MediaPipe Hands detects and crops the hand region (with padding)
-- The crop is resized to 64×64, normalized, and fed to the CNN
-- Returns the predicted letter + confidence score
+The training process includes several techniques to improve model performance and reduce overfitting.
 
----
+* Image augmentation using `ImageDataGenerator`
 
-## 📦 Dataset
+  * Rotation
+  * Width and height shifts
+  * Shear transformation
+  * Zoom
+  * Brightness variation
+* Early stopping to prevent unnecessary training
+* Model checkpointing to save the best-performing model
+* Learning rate reduction when validation performance plateaus
+* Automatic generation of accuracy, loss, and confusion matrix plots
 
-This project uses the **ASL Alphabet** dataset (Kaggle):
-https://www.kaggle.com/datasets/grassknoted/asl-alphabet
+After training, the following files are saved inside the `models/` directory:
 
-29 classes: `A`–`Z`, `space`, `del`, `nothing`.
+cnn_model.keras
+class_names.txt
+accuracy_plot.png
+loss_plot.png
+confusion_matrix.png
 
-See [`dataset/README.md`](dataset/README.md) for full download and setup
-instructions. In short:
 
-```bash
+Prediction Workflow
+
+1. Capture an image from the webcam or upload an image.
+2. MediaPipe detects the hand region.
+3. The detected hand is cropped with padding.
+4. The cropped image is resized to **64 × 64**.
+5. Pixel values are normalized.
+6. The CNN predicts the gesture.
+7. The application displays the predicted letter along with its confidence score.
+
+
+
+Dataset
+
+The model is trained using the **ASL Alphabet Dataset** available on Kaggle.
+
+Classes
+
+ A–Z
+space
+del
+nothing
+
+ Download
+
 pip install kaggle
+
 kaggle datasets download -d grassknoted/asl-alphabet
+
 unzip asl-alphabet.zip -d dataset/
-```
 
-Expected structure:
 
-```
+Expected directory structure:
+
 dataset/
-    asl_alphabet_train/
-        A/  B/  C/  ...  Z/
-        space/
-        del/
-        nothing/
-```
+└── asl_alphabet_train/
+    ├── A/
+    ├── B/
+    ├── ...
+    ├── Z/
+    ├── space/
+    ├── del/
+    └── nothing/
 
----
 
-## 📁 Folder Structure
+Project Structure
 
-```
 Sign-Language-Translator/
+│
 ├── dataset/
-│   └── README.md            # Dataset download & setup instructions
-├── models/                  # Trained model + plots saved here
+├── models/
 ├── utils/
-│   ├── __init__.py
-│   ├── preprocessing.py     # Shared image preprocessing
-│   ├── hand_detector.py     # MediaPipe hand detection & cropping
-│   └── tts.py                # Text-to-speech helper
-├── assets/                  # Screenshots / static assets
-├── train.py                  # CNN training script
-├── predict.py                 # Prediction pipeline / CLI
-├── app.py                     # Streamlit web application
+│   ├── preprocessing.py
+│   ├── hand_detector.py
+│   └── tts.py
+│
+├── assets/
+├── train.py
+├── predict.py
+├── app.py
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-```
 
----
 
-## 🚀 Installation
+Installation
 
-```bash
+Clone the repository and install the required dependencies.
+
 git clone https://github.com/<your-username>/Sign-Language-Translator.git
+
 cd Sign-Language-Translator
 
 python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
+ Windows
+venv\Scripts\activate
 
 pip install -r requirements.txt
-```
 
----
+ Training the Model
 
-## 🏋️ Training
+Once the dataset has been downloaded, start training using:
 
-1. Set up the dataset as described above.
-2. Run:
 
-```bash
 python train.py --data-dir dataset/asl_alphabet_train --epochs 30
-```
 
-This saves:
 
-- `models/cnn_model.keras` — the trained model
-- `models/class_names.txt` — class label order
-- `models/accuracy_plot.png`, `models/loss_plot.png`
-- `models/confusion_matrix.png`
+The trained model and evaluation plots will be saved automatically in the `models/` folder.
 
----
 
-## ▶️ Running Locally
 
-```bash
+ Running the Application
+
+Launch the Streamlit application using:
+
 streamlit run app.py
-```
 
-Then open the printed local URL (typically `http://localhost:8501`) in your browser.
+Then open the local URL displayed in your terminal (typically `http://localhost:8501`).
 
----
+ Deployment
 
-## ☁️ Deployment on Hugging Face Spaces
+The application can be deployed easily using **Hugging Face Spaces**.
 
-1. Create a new Space at https://huggingface.co/new-space
-   - **SDK:** Streamlit
-   - **Hardware:** CPU basic is sufficient
-2. Push this repository's contents to the Space's git remote:
+1. Create a new Streamlit Space.
+2. Upload the project files.
+3. Add the trained model (`cnn_model.keras`) and `class_names.txt`.
+4. Hugging Face automatically installs the dependencies from `requirements.txt` and launches the application.
 
-```bash
-git remote add space https://huggingface.co/spaces/<your-username>/<space-name>
-git push space main
-```
 
-3. Ensure `app.py` is at the repository root (it is) — Hugging Face Spaces
-   auto-detects it as the Streamlit entry point.
-4. Upload a trained `models/cnn_model.keras` and `models/class_names.txt`
-   to the Space (via the web UI, `git lfs`, or the `huggingface_hub` API),
-   since the raw dataset and model are excluded from git by `.gitignore`.
-5. The Space will build automatically using `requirements.txt`.
+What I Learned
 
-**Space configuration (`README.md` front matter for HF Spaces)**, add this
-block to the top of your Space's README if the Space doesn't detect settings
-automatically:
+Working on this project helped me strengthen my understanding of:
 
-```yaml
----
-title: Sign Language Translator
-emoji: 🤟
-colorFrom: teal
-colorTo: purple
-sdk: streamlit
-sdk_version: "1.38.0"
-app_file: app.py
-pinned: false
----
-```
+ Building CNN models for image classification
+ Image preprocessing and augmentation techniques
+ Hand detection using MediaPipe
+ Real-time inference with OpenCV
+ Deploying machine learning applications using Streamlit
+ Integrating deep learning models into end-to-end applications
+Future Improvements
 
----
+Some ideas for extending this project include:
 
-## 🔧 Git Commands
+  Support dynamic ASL words and sentences using LSTM or Transformer-based models
+  Recognize two-hand gestures
+  Convert the model to TensorFlow Lite for edge deployment
+  Improve robustness under different lighting conditions
+  Add multilingual translation and text-to-speech support
 
-```bash
-git init
-git add .
-git commit -m "Initial commit: CNN-based Sign Language Translator"
-git branch -M main
-git remote add origin https://github.com/<your-username>/Sign-Language-Translator.git
-git push -u origin main
-```
+cknowledgements
 
----
+ ASL Alphabet Dataset (Kaggle)
+ TensorFlow
+ OpenCV
+ MediaPipe
+ Streamlit
 
-## 🔮 Future Improvements
 
-- Extend to full ASL word/phrase recognition using sequence models (LSTM/Transformer)
-- Add two-hand and dynamic-gesture support
-- Quantize the model (TFLite) for faster edge/mobile inference
-- Add user-specific calibration for lighting/skin tone robustness
-- Multi-language text-to-speech and translation
-
-## 📄 License
-
-This project is provided as an educational/portfolio reference implementation.
-Check the ASL Alphabet dataset's Kaggle license terms before commercial use.
