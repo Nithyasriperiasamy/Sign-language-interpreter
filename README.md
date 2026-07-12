@@ -1,4 +1,4 @@
-# 🤟 CNN-Based Sign Language Translator
+#  CNN-Based Sign Language Translator
 
 A real-time sign language translator that recognizes **American Sign Language (ASL)** alphabet gestures using a custom Convolutional Neural Network (CNN) and converts them into text. The application also includes an optional text-to-speech feature that reads the translated sentence aloud.
 
